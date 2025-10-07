@@ -63,7 +63,7 @@ function App() {
     });
 
     setScore(finalScore);
-    setScreen('loading');
+    // setScreen('loading');
 
     try {
       const feedbackMsg = await generateFeedback(
