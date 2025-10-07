@@ -1,4 +1,4 @@
-const BACKEND_API_URL = 'http://localhost:5000'; // Node backend root
+const BACKEND_API_URL = 'https://quiz-backend-uej0.onrender.com/'; // Node backend root
 
 export async function generateQuizQuestions(topic) {
   try {
@@ -43,3 +43,4 @@ export async function generateFeedback(topic, score, total) {
     return `Great effort! You scored ${score} out of ${total}. Keep learning!`;
   }
 }
+
