@@ -8,9 +8,12 @@ An interactive web app that generates quizzes on different topics using **Google
 
 ---
 
-## LIVE DEMO LINK
 
-https://ai-quiz-mqbu.vercel.app/
+## 🔗 Important Links
+
+Hosted App: https://ai-quiz-mqbu.vercel.app/
+
+GitHub Repository: https://github.com/Varsha2635/AIQuiz
 
 ---
 
