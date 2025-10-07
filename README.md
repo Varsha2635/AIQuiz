@@ -1,70 +1,190 @@
-# Getting Started with Create React App
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 📘 AI-Assisted Knowledge Quiz
 
-## Available Scripts
+An interactive web app that generates quizzes on different topics using **Google Gemini AI**. Users select a topic, answer AI-generated multiple-choice questions, and receive personalized AI feedback.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* Select from curated topics (AI, Tech, Science, Wellness, History, etc.).
+* Quizzes are dynamically generated using **Gemini 2.5 Flash** API.
+* 5 unique MCQs per quiz.
+* Real-time progress tracking and navigation between questions.
+* AI-generated **personalized feedback** after quiz completion.
+* Review answers with correct/incorrect highlights.
+* Responsive UI built with **React + TailwindCSS**.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🏗️ Architecture & State Management
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **Architecture**
 
-### `npm run build`
+```
+Frontend (React) ↔ Backend (Express + Node) ↔ Gemini AI (Google Generative AI API)
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Frontend (React)**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   * Topic selection, quiz UI, results page.
+   * Fetches quiz data and feedback via `aiService.js`.
+   * Manages state transitions between **topic-selection → loading → quiz → results**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Backend (Node + Express)**
 
-### `npm run eject`
+   * `/quiz` endpoint: prompts Gemini to generate **5 MCQs** in strict JSON format.
+   * `/feedback` endpoint: sends user score and receives **friendly feedback**.
+   * Ensures AI output is valid JSON (`safeParseJSON`).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. **Gemini AI**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   * Generates MCQs + answers.
+   * Creates personalized quiz feedback messages.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### **State Management**
 
-## Learn More
+* Used **React useState hooks** for simple, predictable state handling.
+* `screen`: tracks which screen to show (`topic-selection`, `loading`, `quiz`, `results`).
+* `selectedTopic`: stores chosen topic object.
+* `questions`: holds AI-generated quiz questions.
+* `answers`: dictionary mapping `question.id → selectedAnswer`.
+* `score`: final score after completion.
+* `feedback`: AI-generated feedback message.
+* `error`: error messages from failed API calls.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Why use useState instead of Redux/Context?**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* The app has **localized state** (mainly inside `App.js`) and is not overly complex.
+* Redux/Context would be overkill here.
+* `useState` is enough to manage transitions and UI reactivity.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📝 Prompts Used & Refinements
 
-### Analyzing the Bundle Size
+### 1. **Quiz Generation Prompt**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```txt
+Generate exactly 5 multiple-choice questions on the topic "<TOPIC>".
+Return only valid JSON in this structure (no extra text):
+{
+  "questions": [
+    {
+      "question": "string",
+      "options": ["A", "B", "C", "D"],
+      "answer": "B"
+    }
+  ]
+}
+```
 
-### Making a Progressive Web App
+🔧 **Refinements Made:**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* Restricted Gemini to **valid JSON only** (to avoid extra explanations).
+* Added error handling (`safeParseJSON`) in case Gemini outputs text before/after JSON.
+* Converted `"answer": "B"` into the **full option string** in `aiService.js`.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 2. **Feedback Prompt**
 
-### Deployment
+```txt
+The user scored <SCORE>/<TOTAL> on a quiz about "<TOPIC>".
+Write a short, personalized feedback message (2–3 friendly sentences).
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+🔧 **Refinements Made:**
 
-### `npm run build` fails to minify
+* Limited response length (2–3 sentences).
+* Handled fallback feedback in frontend if API fails.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 📸 Screenshots
+
+### 1. **Topic Selection**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/10bbe6e1-0131-493b-a811-ad2bcf4f5a95" />
+
+
+### 2. **Quiz Loader**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f2796e69-f6cb-4860-ae2b-4407d17c38b6" />
+
+
+### 3. **Quiz Question**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1fa7a40b-46f9-4847-8a6b-3aa7ee25c960" />
+
+
+### 4. **Quiz Results**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d2fb812e-808c-418c-8c8d-3a9cdea1e736" />
+
+
+---
+
+## ⚠️ Known Issues
+
+* **AI sometimes outputs malformed JSON** (extra text, missing commas). Mitigated with `safeParseJSON`, but not 100% foolproof.
+* **Answer correctness depends on AI reliability** (sometimes AI marks ambiguous answers).
+* **API latency**: Quiz generation may take several seconds.
+* **No persistence**: Quiz data is lost on refresh (could be improved with local storage or backend DB).
+
+---
+
+## 🔮 Potential Improvements
+
+* ✅ Add **user authentication & history tracking** (save scores per user).
+* ✅ Allow **difficulty levels** (easy/medium/hard).
+* ✅ Provide **explanations for answers** via AI, not just correct/incorrect.
+* ✅ Add **timer & leaderboard** for gamified experience.
+* ✅ Offline **sample quizzes** in case API fails.
+* ✅ Deploy backend with **cloud server** and frontend with **Vercel/Netlify**.
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone Repo
+
+```bash
+git clone <repo-url>
+cd ai-quiz-app
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment
+
+Create `.env` file:
+
+```
+API_KEY=your_gemini_api_key_here
+PORT=5000
+```
+
+### 4. Start Backend
+
+```bash
+cd backend
+node index.js
+```
+
+### 5. Start Frontend
+
+```bash
+cd frontend
+npm start
+```
+
+---
+
