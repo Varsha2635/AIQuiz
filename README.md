@@ -6,6 +6,14 @@ An interactive web app that generates quizzes on different topics using **Google
 
 ---
 
+---
+
+# LIVE DEMO LINK
+
+https://ai-quiz-mqbu.vercel.app/
+
+---
+
 ## 🚀 Features
 
 * Select from curated topics (AI, Tech, Science, Wellness, History, etc.).
