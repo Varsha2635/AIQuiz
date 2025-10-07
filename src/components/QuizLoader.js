@@ -45,7 +45,6 @@
 //   );
 // }
 
-
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 
@@ -60,6 +59,7 @@ export function QuizLoader({ topicName, mode }) {
             </div>
           </div>
 
+          {/* Quiz Loading Mode */}
           {mode === "quiz" && (
             <>
               <h2 className="text-2xl font-bold text-slate-900 mb-3">
@@ -72,6 +72,7 @@ export function QuizLoader({ topicName, mode }) {
             </>
           )}
 
+          {/* Feedback Loading Mode */}
           {mode === "feedback" && (
             <>
               <h2 className="text-2xl font-bold text-slate-900 mb-3">
@@ -85,6 +86,7 @@ export function QuizLoader({ topicName, mode }) {
 
           <p className="text-sm text-slate-500">This may take a moment...</p>
 
+          {/* Bouncing dots animation */}
           <div className="mt-8 flex justify-center gap-2">
             <div
               className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
@@ -104,4 +106,3 @@ export function QuizLoader({ topicName, mode }) {
     </div>
   );
 }
-
