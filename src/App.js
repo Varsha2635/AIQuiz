@@ -214,6 +214,29 @@ function App() {
     setScore(finalScore);
     setScreen('loading-feedback');
 
+    const minDelay = new Promise((res) => setTimeout(res, 800)); // 0.8s
+  try {
+    const feedbackPromise = generateFeedback(
+      selectedTopic?.name || 'this topic',
+      finalScore,
+      questions.length
+    );
+
+    const [feedbackMsg] = await Promise.all([feedbackPromise, minDelay]);
+    setFeedback(feedbackMsg);
+  } catch (err) {
+    console.error('Error generating feedback:', err);
+    const percentage = Math.round((finalScore / questions.length) * 100);
+    setFeedback(
+      `Great job! You scored ${finalScore} out of ${questions.length} (${percentage}%). Keep learning and improving!`
+    );
+    await minDelay; // still honor the minimal loader time
+  }
+
+  // 4) go to results
+  setScreen('results');
+};
+
     try {
       const feedbackMsg = await generateFeedback(
         selectedTopic?.name || 'this topic',
